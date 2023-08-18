@@ -4,9 +4,10 @@ import 'package:todo_list/model/todo.dart';
 class ToDoItem extends StatelessWidget {
   ToDoItem({super.key, required this.todo, required this.deleteItem});
 
-  void Function(String) deleteItem;
+  void Function(ToDo) deleteItem;
 
   final ToDo todo;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -39,7 +40,7 @@ class ToDoItem extends StatelessWidget {
               ),
               IconButton(
                   onPressed: () {
-                    deleteItem(todo.id);
+                    deleteItem(todo);
                   },
                   icon: const Icon(
                     Icons.delete,

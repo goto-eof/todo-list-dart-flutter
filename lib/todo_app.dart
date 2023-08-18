@@ -35,10 +35,28 @@ class _ToDoAppState extends State<ToDoApp> {
     );
   }
 
-  void _deleteTodo(String id) {
+  void _deleteTodo(ToDo todo) {
+    final index = todos.indexOf(todo);
     setState(() {
-      todos = todos.where((element) => element.id != id).toList();
+      todos = todos.where((element) => element.id != todo.id).toList();
     });
+    ScaffoldMessengerState scaffoldMessengerState =
+        ScaffoldMessenger.of(context);
+    scaffoldMessengerState.clearSnackBars();
+    scaffoldMessengerState.showSnackBar(
+      SnackBar(
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              todos.insert(index, todo);
+            });
+          },
+        ),
+        duration: const Duration(seconds: 3),
+        content: const Text("Do you want to undo the change?"),
+      ),
+    );
   }
 
   @override
