@@ -23,7 +23,7 @@ class ToDo {
     return {
       'id': id,
       'text': text,
-      "date": date.toString(),
+      "date": date.toIso8601String(),
       "category": category.name,
       "priority": priority.name
     };

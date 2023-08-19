@@ -45,7 +45,7 @@ class ToDoService {
       return ToDo(
         id: maps[i]['id'],
         text: maps[i]['text'],
-        date: DateTime.tryParse(maps[i]['date']) ?? DateTime.now(),
+        date: DateTime.parse(maps[i]['date']),
         category: Category.values
             .where((element) => element.name == maps[i]['category'])
             .first,
