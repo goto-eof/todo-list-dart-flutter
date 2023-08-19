@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/model/dummy_data.dart';
 import 'package:todo_list/model/todo.dart';
+import 'package:todo_list/service/todo_service.dart';
 import 'package:todo_list/widget/insert_todo_item_form.dart';
 import 'package:todo_list/widget/todo_item.dart';
 
@@ -15,6 +16,21 @@ class ToDoApp extends StatefulWidget {
 
 class _ToDoAppState extends State<ToDoApp> {
   List<ToDo> todos = [];
+  final ToDoService toDoService = ToDoService();
+
+  @override
+  void initState() {
+    toDoService.list().then(
+          (value) => {
+            setState(() {
+              todos = value;
+            })
+          },
+        );
+    super.initState();
+
+    //WidgetsBinding.instance.addPostFrameCallback((_) {});
+  }
 
   Widget retrieveInsertToDoItemForm(BuildContext context) {
     return InsertTodoItemForm(
@@ -23,9 +39,14 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   void _addTodoItemToTheList(ToDo todo) {
-    setState(() {
-      todos.add(todo);
-    });
+    toDoService.insert(todo).then((int id) => {
+          setState(
+            () {
+              todo.id = id;
+              todos.add(todo);
+            },
+          )
+        });
   }
 
   ToDoItem itemBuilder(BuildContext context, int index) {
@@ -36,10 +57,14 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   void _deleteTodo(ToDo todo) {
+    toDoService.delete(todo.id).then((value) => {
+          setState(() {
+            todos = todos.where((element) => element.id != todo.id).toList();
+          })
+        });
+
     final index = todos.indexOf(todo);
-    setState(() {
-      todos = todos.where((element) => element.id != todo.id).toList();
-    });
+
     ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
     scaffoldMessengerState.clearSnackBars();
@@ -48,9 +73,12 @@ class _ToDoAppState extends State<ToDoApp> {
         action: SnackBarAction(
           label: "Undo",
           onPressed: () {
-            setState(() {
-              todos.insert(index, todo);
-            });
+            toDoService.insert(todo).then((value) => {
+                  setState(() {
+                    todo.id = value;
+                    todos.insert(index, todo);
+                  })
+                });
           },
         ),
         duration: const Duration(seconds: 3),

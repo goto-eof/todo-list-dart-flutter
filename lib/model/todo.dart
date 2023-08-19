@@ -7,17 +7,27 @@ final formatter = DateFormat.yMd();
 
 class ToDo {
   ToDo(
-      {required this.text,
+      {this.id,
+      required this.text,
       required this.date,
       required this.category,
-      required this.priority})
-      : id = uuid.v4();
+      required this.priority});
 
-  final String id;
+  var id;
   final String text;
   final DateTime date;
   final Category category;
   final Priority priority;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'text': text,
+      "date": date.toString(),
+      "category": category.name,
+      "priority": priority.name
+    };
+  }
 
   String get formattedDate {
     return formatter.format(date);
