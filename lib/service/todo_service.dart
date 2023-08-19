@@ -19,7 +19,7 @@ class ToDoService {
       join(await getDatabasesPath(), 'todo.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY, text TEXT, date TEXT, category TEXT, priority TEXT)',
+          'CREATE TABLE todo(id INTEGER PRIMARY KEY, text TEXT, date TEXT, category TEXT, priority TEXT)',
         );
       },
       version: 1,
