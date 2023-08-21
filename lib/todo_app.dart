@@ -91,16 +91,16 @@ class _ToDoAppState extends State<ToDoApp> {
 
   Widget _aboutDialogBuilder(BuildContext context) {
     return AlertDialog(
-      content: Column(
+      content: const Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Developed by Andrei Dodu in 2023."),
+            Text("Developed by Andrei Dodu in 2023."),
             SizedBox(
               height: 10,
             ),
-            const Text("Version: 0.1.0"),
+            Text("Version: 0.1.0"),
           ]),
       actions: [
         TextButton(
