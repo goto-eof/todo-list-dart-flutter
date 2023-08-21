@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todo.dart';
-import 'package:todolist/service/todo_service.dart';
-import 'package:todolist/widget/insert_todo_item_form.dart';
-import 'package:todolist/widget/todo_item.dart';
+import 'package:todolistapp/model/todo.dart';
+import 'package:todolistapp/service/todo_service.dart';
+import 'package:todolistapp/widget/insert_todo_item_form.dart';
+import 'package:todolistapp/widget/todo_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final Uri projectUri =

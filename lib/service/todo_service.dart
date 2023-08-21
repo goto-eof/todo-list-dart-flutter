@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:todolist/model/todo.dart';
+import 'package:todolistapp/model/todo.dart';
 
 class ToDoService {
   var database;
