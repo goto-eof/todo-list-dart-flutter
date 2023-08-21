@@ -15,7 +15,7 @@ slots:
 
 architectures:
   - build-on: amd64
-  - build-on: arm64
+  # - build-on: arm64
 apps:
   todolistapp:
     command: todolistapp
@@ -30,4 +30,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    # stage-packages: [libc6]
+    stage-packages: [libc6libgtk-3-0, libblkid1, liblzma5]
