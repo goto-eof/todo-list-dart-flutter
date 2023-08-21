@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/model/dummy_data.dart';
 import 'package:todo_list/model/todo.dart';
 import 'package:todo_list/service/todo_service.dart';
 import 'package:todo_list/widget/insert_todo_item_form.dart';
@@ -28,8 +27,6 @@ class _ToDoAppState extends State<ToDoApp> {
           },
         );
     super.initState();
-
-    //WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   Widget retrieveInsertToDoItemForm(BuildContext context) {
