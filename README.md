@@ -24,3 +24,5 @@ snap install todolist_0.2.0_amd64.snap
 ```
 snap run todolist
 ```
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/todolistapp)

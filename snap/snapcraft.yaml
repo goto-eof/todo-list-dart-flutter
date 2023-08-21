@@ -26,4 +26,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    stage-packages: [libc6]
+    # stage-packages: [libc6]
