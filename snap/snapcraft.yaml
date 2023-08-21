@@ -11,11 +11,11 @@ slots:
   todolistapp:
     interface: dbus
     bus: session
-    name: com.andreidodu.todolist
+    name: com.andreidodu.todolistapp
 
 apps:
   todolistapp:
-    command: todolist
+    command: todolistapp
     extensions: [flutter-master]
     plugs:
       - network
