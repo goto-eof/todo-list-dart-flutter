@@ -13,6 +13,9 @@ slots:
     bus: session
     name: com.andreidodu.todolistapp
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
 apps:
   todolistapp:
     command: todolistapp
@@ -21,9 +24,7 @@ apps:
       - network
     slots:
       - dbus-todolistapp
-    architectures:
-      - build-on: amd64
-      - build-on: arm64
+
 parts:
   todolistapp:
     source: .
