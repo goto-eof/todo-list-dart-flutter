@@ -22,8 +22,10 @@ class ToDoItem extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                todo.text,
+              Expanded(
+                child: Text(
+                  todo.text,
+                ),
               ),
               const Spacer(),
               Column(
