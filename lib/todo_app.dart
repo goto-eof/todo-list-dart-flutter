@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/model/dummy_data.dart';
-import 'package:todo_list/model/todo.dart';
-import 'package:todo_list/service/todo_service.dart';
-import 'package:todo_list/widget/insert_todo_item_form.dart';
-import 'package:todo_list/widget/todo_item.dart';
+import 'package:todolist/model/todo.dart';
+import 'package:todolist/service/todo_service.dart';
+import 'package:todolist/widget/insert_todo_item_form.dart';
+import 'package:todolist/widget/todo_item.dart';
 
 class ToDoApp extends StatefulWidget {
   const ToDoApp({super.key});

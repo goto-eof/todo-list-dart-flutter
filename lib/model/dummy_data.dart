@@ -1,4 +1,4 @@
-import 'package:todo_list/model/todo.dart';
+import 'package:todolist/model/todo.dart';
 
 final List<ToDo> dummyData = [
   ToDo(

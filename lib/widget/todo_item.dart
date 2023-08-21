@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/model/todo.dart';
+import 'package:todolist/model/todo.dart';
 
 class ToDoItem extends StatelessWidget {
   ToDoItem({super.key, required this.todo, required this.deleteItem});
