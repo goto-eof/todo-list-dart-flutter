@@ -100,7 +100,7 @@ class _ToDoAppState extends State<ToDoApp> {
             SizedBox(
               height: 10,
             ),
-            Text("Version: 0.1.0"),
+            Text("Version: 0.1.1"),
           ]),
       actions: [
         TextButton(

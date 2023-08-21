@@ -1,0 +1,29 @@
+name: todolist
+version: 0.2.0
+summary: To do list
+description: To do list app
+
+confinement: strict
+base: core18
+grade: stable
+
+slots:
+  todolist:
+    interface: dbus
+    bus: session
+    name: com.andreidodu.todolist
+
+apps:
+  todolist:
+    command: todolist
+    extensions: [flutter-master]
+    plugs:
+      - network
+    slots:
+      - dbus-todolist
+parts:
+  todolist:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart
+    stage-packages: [libc6]

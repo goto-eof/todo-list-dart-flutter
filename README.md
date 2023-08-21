@@ -1,7 +1,26 @@
 # TODO List
+
 A simple TODO List implemented using Dart programming language and Flutter Framework.
 
-|Screenshots       |             
-| :--------------: |
-|<img src="ss.png" width="250"/>|
-|<img src="ss2.png" height="250"/>|
+|                  Screenshots                  |
+| :-------------------------------------------: |
+|  <img src="screenshots/ss.png" width="250"/>  |
+| <img src="screenshots/ss2.png" height="250"/> |
+
+# create a snap package
+
+```
+snapcraft --debug
+```
+
+# install snap package
+
+```
+snap install todolist_0.2.0_amd64.snap
+```
+
+# run snap package
+
+```
+snap run todolist
+```

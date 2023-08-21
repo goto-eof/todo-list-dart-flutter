@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=To Do List
+Comment=To Do List application
+Exec=todolist
+Icon=${SNAP}/meta/gui/todo-list.png
+Terminal=false
+Type=Application
+Categories=Education;
