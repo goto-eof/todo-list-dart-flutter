@@ -34,18 +34,55 @@ class ToDo {
   }
 }
 
-enum Category { travel, leisure, work }
+enum Category { food, travel, leisure, work }
 
 final categoryIcon = {
   Category.travel: Icons.airplane_ticket,
-  Category.leisure: Icons.music_note,
-  Category.work: Icons.work
+  Category.leisure: Icons.coffee,
+  Category.work: Icons.work,
+  Category.food: Icons.food_bank
 };
 
 enum Priority { low, medium, hight }
 
-final priorityIcon = {
-  Priority.low: Icons.brightness_low,
-  Priority.medium: Icons.brightness_medium,
-  Priority.hight: Icons.brightness_high
+final Map<Priority, Widget> priorityIcon = {
+  Priority.low: const Row(
+    children: [
+      Icon(Icons.label_important, color: Colors.green),
+      Icon(Icons.label_important_outline, color: Colors.green),
+      Icon(Icons.label_important_outline, color: Colors.green)
+    ],
+  ),
+  Priority.medium: const Row(
+    children: [
+      Icon(
+        Icons.label_important,
+        color: Colors.orange,
+      ),
+      Icon(
+        Icons.label_important,
+        color: Colors.orange,
+      ),
+      Icon(
+        Icons.label_important_outline,
+        color: Colors.orange,
+      )
+    ],
+  ),
+  Priority.hight: const Row(
+    children: [
+      Icon(
+        Icons.label_important,
+        color: Colors.red,
+      ),
+      Icon(
+        Icons.label_important,
+        color: Colors.red,
+      ),
+      Icon(
+        Icons.label_important,
+        color: Colors.red,
+      )
+    ],
+  ),
 };

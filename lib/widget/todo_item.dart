@@ -8,49 +8,64 @@ class ToDoItem extends StatelessWidget {
 
   final ToDo todo;
 
+  void _dismissItem(direction) {
+    deleteItem(todo);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
-          Row(
-            children: [
-              Icon(
-                categoryIcon[todo.category],
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Text(
-                  todo.text,
+    return Dismissible(
+      background: Container(color: Colors.red),
+      key: Key(todo.id.toString()),
+      onDismissed: _dismissItem,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            Row(
+              children: [
+                Icon(
+                  categoryIcon[todo.category],
                 ),
-              ),
-              const Spacer(),
-              Column(
-                children: [
-                  Text(todo.formattedDate),
-                  const SizedBox(
-                    height: 10,
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  flex: 1000,
+                  child: Text(
+                    todo.text,
                   ),
-                  Icon(priorityIcon[todo.priority])
-                ],
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              IconButton(
-                  onPressed: () {
-                    deleteItem(todo);
-                  },
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ))
-            ],
-          ),
-        ]),
+                ),
+                const Spacer(),
+                Column(
+                  children: [
+                    Text(todo.formattedDate),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    priorityIcon[todo.priority]!,
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            deleteItem(todo);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Color.fromARGB(255, 0, 162, 255),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ]),
+        ),
       ),
     );
   }
