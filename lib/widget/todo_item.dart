@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/model/todo.dart';
 
 class ToDoItem extends StatelessWidget {
-  ToDoItem({super.key, required this.todo, required this.deleteItem});
+  const ToDoItem({super.key, required this.todo, required this.deleteItem});
 
-  void Function(ToDo) deleteItem;
+  final void Function(ToDo) deleteItem;
 
   final ToDo todo;
 
