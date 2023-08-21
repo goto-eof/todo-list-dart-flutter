@@ -27,8 +27,6 @@ class _ToDoAppState extends State<ToDoApp> {
           },
         );
     super.initState();
-
-    //WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   Widget retrieveInsertToDoItemForm(BuildContext context) {

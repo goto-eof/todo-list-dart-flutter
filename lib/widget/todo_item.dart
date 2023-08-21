@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todolist/model/todo.dart';
 
 class ToDoItem extends StatelessWidget {
-  ToDoItem({super.key, required this.todo, required this.deleteItem});
+  const ToDoItem({super.key, required this.todo, required this.deleteItem});
 
-  void Function(ToDo) deleteItem;
+  final void Function(ToDo) deleteItem;
 
   final ToDo todo;
 
@@ -22,8 +22,10 @@ class ToDoItem extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                todo.text,
+              Expanded(
+                child: Text(
+                  todo.text,
+                ),
               ),
               const Spacer(),
               Column(
