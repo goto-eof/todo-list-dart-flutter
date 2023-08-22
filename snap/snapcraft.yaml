@@ -7,11 +7,11 @@ confinement: strict
 base: core18
 grade: stable
 
-slots:
-  todolistapp:
-    interface: dbus
-    bus: session
-    name: com.andreidodu.todolistapp
+#slots:
+#  todolistapp:
+#    interface: dbus
+#    bus: session
+#    name: com.andreidodu.todolistapp
 
 architectures:
   - build-on: amd64
@@ -30,4 +30,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    # stage-packages: [libgtk-3-0, libblkid1, liblzma5]
+    stage-packages: [libc6]
