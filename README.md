@@ -1,6 +1,6 @@
 # TODO List
 
-A simple TODO List application implemented using Dart and Flutter. The software stores all personal data locally (using a SQLite database). The application allows to categorize tasks, give a priority to the task and set a task due date. This is the first version and new versions of software will come soon.
+A simple TODO List application implemented using Dart and Flutter. The software stores all personal tasks locally (using a SQLite database). The application allows to categorize tasks, give a priority to the task and set a task due date. This is the first version and new versions of software will come soon.
 
 # Download
 
