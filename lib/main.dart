@@ -3,8 +3,10 @@ import 'package:todolistapp/todo_app.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
-      home: ToDoApp(),
+    MaterialApp(
+      themeMode: ThemeMode.system,
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      home: const ToDoApp(),
       debugShowCheckedModeBanner: false,
     ),
   );

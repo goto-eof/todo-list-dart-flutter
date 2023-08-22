@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
 final formatter = DateFormat.yMd();
+final formatterTime = DateFormat.Hms();
 
 class ToDo {
   ToDo(
@@ -11,78 +12,83 @@ class ToDo {
       required this.text,
       required this.date,
       required this.category,
-      required this.priority});
+      required this.priority,
+      required this.done,
+      required this.archived,
+      this.insertDateTime});
 
   var id;
+  bool done;
+  bool archived;
   final String text;
   final DateTime date;
   final Category category;
-  final Priority priority;
+  Priority priority;
+  DateTime? insertDateTime;
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'done': done ? 1 : 0,
+      'archived': archived ? 1 : 0,
       'text': text,
       "date": date.toIso8601String(),
       "category": category.name,
-      "priority": priority.name
+      "priority": priority.name,
+      "insert_date_time": DateTime.now().toIso8601String(),
+      "update_date_time": DateTime.now().toIso8601String()
     };
   }
 
   String get formattedDate {
     return formatter.format(date);
   }
+
+  String get formattedInserDateTime {
+    return formatter.format(insertDateTime!) +
+        " " +
+        formatterTime.format(insertDateTime!);
+  }
 }
 
-enum Category { food, travel, leisure, work }
+enum Category { travel, leisure, work }
 
 final categoryIcon = {
   Category.travel: Icons.airplane_ticket,
   Category.leisure: Icons.coffee,
   Category.work: Icons.work,
-  Category.food: Icons.food_bank
 };
 
 enum Priority { low, medium, hight }
 
-final Map<Priority, Widget> priorityIcon = {
-  Priority.low: const Row(
-    children: [
-      Icon(Icons.label_important, color: Colors.green),
-      Icon(Icons.label_important_outline, color: Colors.green),
-      Icon(Icons.label_important_outline, color: Colors.green)
-    ],
-  ),
-  Priority.medium: const Row(
-    children: [
-      Icon(
-        Icons.label_important,
-        color: Colors.orange,
-      ),
-      Icon(
-        Icons.label_important,
-        color: Colors.orange,
-      ),
-      Icon(
-        Icons.label_important_outline,
-        color: Colors.orange,
-      )
-    ],
-  ),
-  Priority.hight: const Row(
-    children: [
-      Icon(
-        Icons.label_important,
-        color: Colors.red,
-      ),
-      Icon(
-        Icons.label_important,
-        color: Colors.red,
-      ),
-      Icon(
-        Icons.label_important,
-        color: Colors.red,
-      )
-    ],
-  ),
-};
+Map<Priority, Widget> getPriorityIcon(final bool disabled) {
+  return {
+    Priority.low: Row(
+      children: [
+        Icon(
+          Icons.label_important,
+          color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.green,
+          size: 35,
+        ),
+      ],
+    ),
+    Priority.medium: Row(
+      children: [
+        Icon(
+          Icons.label_important,
+          color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.orange,
+          size: 35,
+        ),
+      ],
+    ),
+    Priority.hight: Row(
+      children: [
+        Icon(
+          Icons.label_important,
+          color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.red,
+          size: 35,
+        ),
+      ],
+    ),
+  };
+}

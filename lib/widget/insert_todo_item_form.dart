@@ -45,6 +45,8 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
       return;
     }
     widget.onAddTodo(ToDo(
+        done: false,
+        archived: false,
         text: _textController.text,
         date: _selectedDate!,
         category: _selectedCategory,
@@ -88,6 +90,7 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       child: Column(children: [
         const Row(
@@ -103,9 +106,10 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
           children: [
             Expanded(
               child: TextField(
+                autofocus: true,
                 controller: _textController,
                 keyboardType: TextInputType.text,
-                maxLength: 50,
+                maxLength: 100,
               ),
             ),
             const SizedBox(

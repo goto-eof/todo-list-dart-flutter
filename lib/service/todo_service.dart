@@ -19,13 +19,13 @@ class ToDoService {
       directory = appDocumentsDir.path;
     }
     database ??= openDatabase(
-      join(directory ?? await getDatabasesPath(), 'todo.db'),
+      join(directory ?? await getDatabasesPath(), 'todolistapp.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE todo(id INTEGER PRIMARY KEY, text TEXT, date TEXT, category TEXT, priority TEXT)',
-        );
+            'CREATE TABLE todo(id INTEGER PRIMARY KEY, text TEXT, date TEXT, category TEXT, priority TEXT, done INTEGER DEFAULT 0, archived INTEGER DEFAULT 0, insert_date_time TEXT, update_date_time TEXT, tags TEXT)');
       },
-      version: 1,
+      onUpgrade: (db, oldVersion, newVersion) => {if (newVersion >= 2) {}},
+      version: 2,
     );
     return database;
   }
@@ -39,10 +39,12 @@ class ToDoService {
     );
   }
 
-  Future<List<ToDo>> list() async {
+  Future<List<ToDo>> list({archived = false}) async {
     final db = await getDatabaseConnection();
 
-    final List<Map<String, dynamic>> maps = await db.query('todo');
+    final List<Map<String, dynamic>> maps = await db.query('todo',
+        orderBy: 'insert_date_time desc',
+        where: 'archived = ' + (archived ? '1' : '0'));
 
     return List.generate(maps.length, (i) {
       return ToDo(
@@ -55,6 +57,11 @@ class ToDoService {
         priority: Priority.values
             .where((element) => element.name == maps[i]['priority'])
             .first,
+        done: maps[i]['done'] == 1,
+        archived: maps[i]['archived'] == 1,
+        insertDateTime: DateTime.parse(
+          maps[i]['insert_date_time'],
+        ),
       );
     });
   }
@@ -67,5 +74,13 @@ class ToDoService {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<int> update(ToDo todo) async {
+    final db = await getDatabaseConnection();
+
+    final result = await db
+        .update('todo', todo.toMap(), where: "id = ?", whereArgs: [todo.id]);
+    return result;
   }
 }
