@@ -15,6 +15,7 @@ apps:
   my-flutter-app:
     command: todolistapp
     extensions: [gnome]
+    plugs: [network, network-bind]
 
 parts:
   my-flutter-app:
