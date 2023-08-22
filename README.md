@@ -5,6 +5,7 @@ A simple TODO List implemented using Dart programming language and Flutter Frame
 # Download
 
 TODO List application can be downloaded from the snap store:
+
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/todolistapp)
 
 |                  Screenshots                  |
