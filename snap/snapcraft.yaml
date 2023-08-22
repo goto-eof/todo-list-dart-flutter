@@ -22,8 +22,8 @@ apps:
     extensions: [flutter-stable]
     plugs:
       - network
-    slots:
-      - dbus-todolistapp
+    # slots:
+    #  - dbus-todolistapp
 
 parts:
   todolistapp:
