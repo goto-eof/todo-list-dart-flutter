@@ -28,3 +28,5 @@ features:
 - view active/archived tasks
 - sort by date/priority
 - increased input length for task description to 100 characters
+
+If you found a bug, please [contact me](http://andre-i.eu/#contactme).
