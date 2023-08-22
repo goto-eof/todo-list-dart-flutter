@@ -18,6 +18,7 @@ apps:
 
 parts:
   my-flutter-app:
+    build-packages: [curl]
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
