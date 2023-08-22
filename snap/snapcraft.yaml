@@ -1,33 +1,19 @@
 name: todolistapp
-version: 0.2.0
-summary: To do list
-description: To do list app
+version: '0.1.0'
+summary: TODO List app.
+description: TO DO List application.
 
+base: core22
 confinement: strict
-base: core18
 grade: stable
 
-#slots:
-#  todolistapp:
-#    interface: dbus
-#    bus: session
-#    name: com.andreidodu.todolistapp
-
-architectures:
-  - build-on: amd64
-  # - build-on: arm64
 apps:
-  todolistapp:
+  my-flutter-app:
     command: todolistapp
-    extensions: [flutter-stable]
-    plugs:
-      - network
-    # slots:
-    #  - dbus-todolistapp
+    extensions: [gnome]
 
 parts:
-  todolistapp:
+  my-flutter-app:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    stage-packages: [libc6]
