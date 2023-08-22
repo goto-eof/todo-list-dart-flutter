@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:todolistapp/model/todo.dart';
 
@@ -10,12 +11,16 @@ class ToDoService {
 
   Future<Database> getDatabaseConnection() async {
     WidgetsFlutterBinding.ensureInitialized();
+    String? directory;
     if (Platform.isWindows || Platform.isLinux) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
+      final Directory appDocumentsDir =
+          await getApplicationDocumentsDirectory();
+      directory = appDocumentsDir.path;
     }
     database ??= openDatabase(
-      join(await getDatabasesPath(), 'todo.db'),
+      join(directory ?? await getDatabasesPath(), 'todo.db'),
       onCreate: (db, version) {
         return db.execute(
           'CREATE TABLE todo(id INTEGER PRIMARY KEY, text TEXT, date TEXT, category TEXT, priority TEXT)',
