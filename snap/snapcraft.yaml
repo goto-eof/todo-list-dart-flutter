@@ -19,7 +19,7 @@ architectures:
 apps:
   todolistapp:
     command: todolistapp
-    extensions: [flutter-master]
+    extensions: [flutter-stable]
     plugs:
       - network
     slots:
