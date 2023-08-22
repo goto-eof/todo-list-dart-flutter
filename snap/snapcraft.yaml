@@ -12,13 +12,13 @@ architectures:
   # - build-on: arm64
 
 apps:
-  my-flutter-app:
+  todolistapp:
     command: todolistapp
     extensions: [gnome]
     plugs: [network, network-bind]
 
 parts:
-  my-flutter-app:
+  todolistapp:
     build-packages: [curl]
     source: .
     plugin: flutter
