@@ -15,8 +15,7 @@ class ToDoService {
     if (Platform.isWindows || Platform.isLinux) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
-      final Directory appDocumentsDir =
-          await getApplicationDocumentsDirectory();
+      final Directory appDocumentsDir = await getApplicationSupportDirectory();
       directory = appDocumentsDir.path;
     }
     database ??= openDatabase(
