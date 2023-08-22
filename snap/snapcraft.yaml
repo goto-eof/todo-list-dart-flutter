@@ -30,4 +30,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    stage-packages: [libgtk-3-0, libblkid1, liblzma5]
+    # stage-packages: [libgtk-3-0, libblkid1, liblzma5]
