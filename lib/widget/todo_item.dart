@@ -19,6 +19,7 @@ class ToDoItem extends StatelessWidget {
       key: Key(todo.id.toString()),
       onDismissed: _dismissItem,
       child: Card(
+        color: const Color.fromARGB(255, 240, 243, 252),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
@@ -26,6 +27,8 @@ class ToDoItem extends StatelessWidget {
               children: [
                 Icon(
                   categoryIcon[todo.category],
+                  size: 35,
+                  color: Colors.blue,
                 ),
                 const SizedBox(
                   width: 10,
@@ -34,6 +37,7 @@ class ToDoItem extends StatelessWidget {
                   flex: 1000,
                   child: Text(
                     todo.text,
+                    style: const TextStyle(fontSize: 17),
                   ),
                 ),
                 const Spacer(),
@@ -55,7 +59,7 @@ class ToDoItem extends StatelessWidget {
                           },
                           icon: const Icon(
                             Icons.delete,
-                            color: Color.fromARGB(255, 0, 162, 255),
+                            color: Color.fromARGB(255, 255, 0, 0),
                           ),
                         ),
                       ],

@@ -96,11 +96,11 @@ class _ToDoAppState extends State<ToDoApp> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Developed by Andrei Dodu in 2023."),
+            Text("Developed by Andrei Dodu."),
             SizedBox(
               height: 10,
             ),
-            Text("Version: 0.1.1"),
+            Text("Version: 0.1.0 (2023)"),
           ]),
       actions: [
         TextButton(
@@ -151,6 +151,7 @@ class _ToDoAppState extends State<ToDoApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.list),
         title: const Text("TODO List"),
         actions: [
           IconButton(
