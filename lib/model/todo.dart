@@ -45,9 +45,7 @@ class ToDo {
   }
 
   String get formattedInserDateTime {
-    return formatter.format(insertDateTime!) +
-        " " +
-        formatterTime.format(insertDateTime!);
+    return "${formatter.format(insertDateTime!)} ${formatterTime.format(insertDateTime!)}";
   }
 }
 

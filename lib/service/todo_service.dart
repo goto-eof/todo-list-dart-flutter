@@ -44,7 +44,7 @@ class ToDoService {
 
     final List<Map<String, dynamic>> maps = await db.query('todo',
         orderBy: 'insert_date_time desc',
-        where: 'archived = ' + (archived ? '1' : '0'));
+        where: 'archived = ${archived ? '1' : '0'}');
 
     return List.generate(maps.length, (i) {
       return ToDo(
