@@ -1,5 +1,6 @@
 {
-    "workbench.colorCustomizations": {
-        "editorUnnecessaryCode.border": "#d55151"
-    }
+  "workbench.colorCustomizations": {
+    "editorUnnecessaryCode.border": "#d55151"
+  },
+  "cmake.sourceDirectory": "/home/andrei/_programmazione/_dart/todo_list/linux"
 }
