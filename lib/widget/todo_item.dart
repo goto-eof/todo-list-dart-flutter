@@ -17,7 +17,7 @@ class ToDoItem extends StatelessWidget {
   final void Function(ToDo) setItemToDone;
   final void Function(ToDo) archiveItem;
   final void Function(Priority, ToDo) setPriority;
-  ViewMode viewMode;
+  final ViewMode viewMode;
 
   final ToDo todo;
 
