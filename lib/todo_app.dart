@@ -111,12 +111,6 @@ class _ToDoAppState extends State<ToDoApp> {
           ]),
       actions: [
         TextButton(
-          child: const Text('View Source Code'),
-          onPressed: () {
-            _launchUrl();
-          },
-        ),
-        TextButton(
           child: const Text('Close'),
           onPressed: () {
             Navigator.of(context).pop();
@@ -257,9 +251,18 @@ class _ToDoAppState extends State<ToDoApp> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.list),
-        title: const Text("TODO List"),
-        backgroundColor: Theme.of(context).disabledColor,
+        title: Row(
+          children: [
+            Image.asset(
+              "assets/images/icon-48.png",
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            const Text("TODO List"),
+          ],
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
               onPressed: () {
