@@ -15,7 +15,7 @@ class AboutDialog extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Text("Version: 0.2.0 (2023)"),
+            Text("Version: 0.3.0 (2023)"),
           ]),
       actions: [
         TextButton(
