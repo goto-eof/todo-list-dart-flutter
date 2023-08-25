@@ -3,10 +3,14 @@ import 'package:todolistapp/model/todo.dart';
 
 class SortByPanel extends StatefulWidget {
   const SortByPanel(
-      {super.key, required this.sortByPriority, required this.sortByDate});
+      {super.key,
+      required this.sortByPriority,
+      required this.sortByDate,
+      required this.disableSortByPriorityButton});
 
   final Function(bool) sortByPriority;
   final Function(bool) sortByDate;
+  final bool disableSortByPriorityButton;
 
   @override
   State<StatefulWidget> createState() {
@@ -19,6 +23,21 @@ class _ItemMenuState extends State<SortByPanel> {
   bool reversePriority = false;
   bool reverseDate = false;
 
+  Color? _calculateSortByPriorityColor() {
+    return widget.disableSortByPriorityButton
+        ? const Color.fromARGB(255, 78, 76, 76)
+        : null;
+  }
+
+  void _reversePriority() {
+    widget.sortByPriority(reversePriority);
+    setState(
+      () {
+        reversePriority = !reversePriority;
+      },
+    );
+  }
+
   @override
   Widget build(Object context) {
     return Row(
@@ -26,19 +45,17 @@ class _ItemMenuState extends State<SortByPanel> {
         Row(
           children: [
             IconButton(
-              onPressed: () {
-                widget.sortByPriority(reversePriority);
-                setState(
-                  () {
-                    reversePriority = !reversePriority;
-                  },
-                );
-              },
+              color: _calculateSortByPriorityColor(),
+              onPressed:
+                  widget.disableSortByPriorityButton ? null : _reversePriority,
               icon: Icon(reversePriority
                   ? Icons.keyboard_double_arrow_down
                   : Icons.keyboard_double_arrow_up),
             ),
-            const Text("Priority")
+            Text(
+              "Priority",
+              style: TextStyle(color: _calculateSortByPriorityColor()),
+            )
           ],
         ),
         Row(

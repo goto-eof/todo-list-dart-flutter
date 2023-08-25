@@ -59,14 +59,14 @@ final categoryIcon = {
 
 enum Priority { low, medium, hight }
 
-Map<Priority, Widget> getPriorityIcon(final bool disabled) {
+Map<Priority, Widget> getPriorityIcon(final bool disabled, double size) {
   return {
     Priority.low: Row(
       children: [
         Icon(
           Icons.label_important,
           color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.green,
-          size: 35,
+          size: size,
         ),
       ],
     ),
@@ -75,7 +75,7 @@ Map<Priority, Widget> getPriorityIcon(final bool disabled) {
         Icon(
           Icons.label_important,
           color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.orange,
-          size: 35,
+          size: size,
         ),
       ],
     ),
@@ -84,7 +84,7 @@ Map<Priority, Widget> getPriorityIcon(final bool disabled) {
         Icon(
           Icons.label_important,
           color: disabled ? const Color.fromARGB(109, 0, 0, 0) : Colors.red,
-          size: 35,
+          size: size,
         ),
       ],
     ),

@@ -15,9 +15,13 @@ apps:
   todolistapp:
     command: todolistapp
     extensions: [gnome]
-    plugs: [network, network-bind]
+    plugs: [network, network-bind, home]
 
 parts:
+  zenity-integration:
+    plugin: nil
+    stage-snaps:
+      - zenity-integration
   todolistapp:
     build-packages: [curl]
     source: .

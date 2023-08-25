@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/todo_service.dart';
 import 'package:todolistapp/widget/insert_todo_item_form.dart';
 import 'package:todolistapp/widget/sort_by_panel.dart';
 import 'package:todolistapp/widget/todo_item.dart';
+import 'package:todolistapp/widget/view_mode_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final Uri projectUri =
@@ -23,10 +25,33 @@ class _ToDoAppState extends State<ToDoApp> {
   final ToDoService toDoService = ToDoService();
   var _isLoading = true;
   var _toggleViewArchivedButton = true;
+  bool _disableSortByPriorityButton = false;
+  SharedPreferences? sharedPreferences;
+  ViewMode _viewMode = ViewMode.normal;
+
   @override
   void initState() {
     loadToDoList();
     super.initState();
+    getSharedPreferences();
+    _loadPreferences();
+  }
+
+  Future<SharedPreferences> getSharedPreferences() async {
+    sharedPreferences ??= await SharedPreferences.getInstance();
+    return sharedPreferences!;
+  }
+
+  void _loadPreferences() async {
+    SharedPreferences sharedPreferences = await getSharedPreferences();
+    String? viewMode = sharedPreferences.getString('viewMode');
+    if (viewMode != null) {
+      ViewMode convertedViewMode =
+          ViewMode.values.where((element) => element.name == viewMode).first;
+      setState(() {
+        _viewMode = convertedViewMode;
+      });
+    }
   }
 
   void loadToDoList() async {
@@ -75,6 +100,14 @@ class _ToDoAppState extends State<ToDoApp> {
         todos.insert(0, todo);
       },
     );
+    _updateDisableSortByPriority();
+  }
+
+  bool checkIfAllItemsHasSamePriority() {
+    Priority priority = todos[0].priority;
+    ToDo? toDoWithOtherPriority =
+        todos.where((ToDo todo) => todo.priority != priority).firstOrNull;
+    return toDoWithOtherPriority == null;
   }
 
   ToDoItem itemBuilder(BuildContext context, int index) {
@@ -83,7 +116,8 @@ class _ToDoAppState extends State<ToDoApp> {
         deleteItem: _deleteTodo,
         setItemToDone: _toggleDoneValue,
         setPriority: _setPriority,
-        archiveItem: _archiveItem);
+        archiveItem: _archiveItem,
+        viewMode: _viewMode);
   }
 
   void _undo(index, ToDo todo) async {
@@ -97,27 +131,7 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   Widget _aboutDialogBuilder(BuildContext context) {
-    return AlertDialog(
-      content: const Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Developed by Andrei Dodu."),
-            SizedBox(
-              height: 10,
-            ),
-            Text("Version: 0.2.0 (2023)"),
-          ]),
-      actions: [
-        TextButton(
-          child: const Text('Close'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
+    return const AboutDialog();
   }
 
   void _toggleDoneValue(ToDo todo) async {
@@ -133,6 +147,7 @@ class _ToDoAppState extends State<ToDoApp> {
       todos.remove(todo);
     });
     await toDoService.update(todo);
+    _updateDisableSortByPriority();
   }
 
   void _setPriority(final Priority priority, final ToDo todo) async {
@@ -168,6 +183,13 @@ class _ToDoAppState extends State<ToDoApp> {
         content: const Text("Do you want to undo the change?"),
       ),
     );
+    _updateDisableSortByPriority();
+  }
+
+  void _updateDisableSortByPriority() {
+    setState(() {
+      _disableSortByPriorityButton = checkIfAllItemsHasSamePriority();
+    });
   }
 
   void _viewArchived() async {
@@ -181,6 +203,7 @@ class _ToDoAppState extends State<ToDoApp> {
       todos = list;
       _isLoading = false;
     });
+    _updateDisableSortByPriority();
   }
 
   void _viewActive() async {
@@ -194,9 +217,10 @@ class _ToDoAppState extends State<ToDoApp> {
       todos = list;
       _isLoading = false;
     });
+    _updateDisableSortByPriority();
   }
 
-  void _sortByPriority(final bool reverse) {
+  void _sortByPriority(final bool reverse) async {
     setState(() {
       todos.sort(
         (ToDo a, ToDo b) {
@@ -212,7 +236,7 @@ class _ToDoAppState extends State<ToDoApp> {
     });
   }
 
-  void _sortByDate(final bool reverse) {
+  void _sortByDate(final bool reverse) async {
     setState(() {
       todos.sort(
         (ToDo a, ToDo b) {
@@ -225,6 +249,14 @@ class _ToDoAppState extends State<ToDoApp> {
           return 0;
         },
       );
+    });
+  }
+
+  void _changeViewMode(ViewMode newViewMode) async {
+    SharedPreferences sharedPreferences = await getSharedPreferences();
+    sharedPreferences.setString("viewMode", newViewMode.name);
+    setState(() {
+      _viewMode = newViewMode;
     });
   }
 
@@ -259,7 +291,7 @@ class _ToDoAppState extends State<ToDoApp> {
             const SizedBox(
               width: 5,
             ),
-            const Text("TODO List"),
+            const Text("To Do List"),
           ],
         ),
         backgroundColor: Theme.of(context).primaryColor,
@@ -302,8 +334,18 @@ class _ToDoAppState extends State<ToDoApp> {
               ),
               const Spacer(),
               calculatedViewArchiveButton,
+              const SizedBox(
+                width: 10,
+              ),
+              ViewModePanel(
+                  changeViewMode: _changeViewMode, viewMode: _viewMode),
+              const SizedBox(
+                width: 10,
+              ),
               SortByPanel(
-                  sortByPriority: _sortByPriority, sortByDate: _sortByDate),
+                  sortByPriority: _sortByPriority,
+                  sortByDate: _sortByDate,
+                  disableSortByPriorityButton: _disableSortByPriorityButton),
               const SizedBox(
                 width: 50,
               )

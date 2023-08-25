@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/widget/Item_menu.dart';
+import 'package:todolistapp/widget/view_mode_panel.dart';
 
 class ToDoItem extends StatelessWidget {
-  const ToDoItem(
+  ToDoItem(
       {super.key,
       required this.todo,
       required this.deleteItem,
       required this.setItemToDone,
       required this.setPriority,
-      required this.archiveItem});
+      required this.archiveItem,
+      required this.viewMode});
 
   final void Function(ToDo) deleteItem;
   final void Function(ToDo) setItemToDone;
   final void Function(ToDo) archiveItem;
   final void Function(Priority, ToDo) setPriority;
+  ViewMode viewMode;
 
   final ToDo todo;
 
@@ -28,6 +31,117 @@ class ToDoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (viewMode == ViewMode.compact) {
+      return _viewCompact();
+    }
+    return _viewNormal();
+  }
+
+  Widget _viewCompact() {
+    return Dismissible(
+      key: Key(todo.id.toString()),
+      onDismissed: _dismissItem,
+      background: Container(color: Colors.red),
+      child: Card(
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: todo.done
+                ? []
+                : [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 203, 244, 244)
+                          .withOpacity(0.2),
+                      spreadRadius: 5,
+                      blurRadius: 1,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+          ),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 5,
+              ),
+              getPriorityIcon(todo.done, 16)[todo.priority]!,
+              const SizedBox(
+                width: 5,
+              ),
+              Icon(
+                categoryIcon[todo.category],
+                size: 16,
+                color: todo.done
+                    ? const Color.fromARGB(255, 167, 169, 168)
+                    : Colors.blue,
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(todo.formattedDate),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(todo.text),
+              const Spacer(),
+              Card(
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(0, 0),
+                        ),
+                      ]),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          deleteItem(todo);
+                        },
+                        color: Colors.red,
+                        icon: const Icon(
+                          Icons.delete,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () {
+                          archiveItem(todo);
+                        },
+                        color: todo.archived
+                            ? Colors.blue
+                            : const Color.fromARGB(255, 178, 155, 38),
+                        icon: Icon(
+                          todo.archived ? Icons.unarchive : Icons.archive,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () {
+                          setItemToDone(todo);
+                        },
+                        color: todo.done ? Colors.blue : Colors.green,
+                        icon: Icon(
+                          todo.done ? Icons.undo : Icons.done,
+                        ),
+                      ),
+                      ItemMenu(
+                        setPriority: _setPriority,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _viewNormal() {
     return Dismissible(
       background: Container(color: Colors.red),
       key: Key(todo.id.toString()),
@@ -101,7 +215,7 @@ class ToDoItem extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      getPriorityIcon(todo.done)[todo.priority]!,
+                      getPriorityIcon(todo.done, 35)[todo.priority]!,
                       Icon(
                         categoryIcon[todo.category],
                         size: 40,
