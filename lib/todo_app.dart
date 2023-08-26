@@ -28,18 +28,23 @@ class _ToDoAppState extends State<ToDoApp> {
   SharedPreferences? sharedPreferences;
   ViewMode _viewMode = ViewMode.normal;
   PackageInfo? packageInfo;
+
   @override
   void initState() {
     _loadToDoList();
     _getSharedPreferences();
+    _initInstances();
     _loadPreferences();
     super.initState();
   }
 
   Future<SharedPreferences> _getSharedPreferences() async {
     sharedPreferences ??= await SharedPreferences.getInstance();
-    packageInfo ??= await PackageInfo.fromPlatform();
     return sharedPreferences!;
+  }
+
+  Future<void> _initInstances() async {
+    packageInfo ??= await PackageInfo.fromPlatform();
   }
 
   void _loadPreferences() async {
