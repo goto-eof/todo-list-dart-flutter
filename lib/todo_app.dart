@@ -57,11 +57,11 @@ class _ToDoAppState extends State<ToDoApp> {
   void _loadToDoList() async {
     try {
       List<ToDo> list = await toDoService.list();
-
       setState(
         () {
           _isLoading = false;
           todos = list;
+          _sortByPriority(true);
         },
       );
     } catch (exception) {
