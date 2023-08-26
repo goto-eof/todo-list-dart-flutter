@@ -38,21 +38,20 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
     });
   }
 
-  void _submitData() {
+  void _submitData() async {
     if (!_validateForm()) {
       showDialog(
           context: context,
           builder: (BuildContext ctx) => _getErrorDialog(ctx));
       return;
     }
-    widget.onAddTodo(ToDo(
+    await widget.onAddTodo(ToDo(
         done: false,
         archived: false,
         text: _textController.text,
         date: _selectedDate!,
         category: _selectedCategory,
         priority: _selectedPriority));
-
     Navigator.pop(context);
   }
 
@@ -90,14 +89,6 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    var toDoFocusNode = FocusNode(onKey: (node, event) {
-      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-        _submitData();
-        return KeyEventResult.handled;
-      }
-      return KeyEventResult.ignored;
-    });
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -114,12 +105,19 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
         Row(
           children: [
             Expanded(
-              child: TextField(
-                autofocus: true,
-                focusNode: toDoFocusNode,
-                controller: _textController,
-                keyboardType: TextInputType.text,
-                maxLength: 100,
+              child: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: (v) {
+                  if (v.logicalKey == LogicalKeyboardKey.enter) {
+                    _submitData();
+                  }
+                },
+                child: TextField(
+                  autofocus: true,
+                  controller: _textController,
+                  keyboardType: TextInputType.text,
+                  maxLength: 100,
+                ),
               ),
             ),
             const SizedBox(
@@ -186,24 +184,30 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
                     })),
           ],
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Close"),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            OutlinedButton(
-              onPressed: _submitData,
-              child: const Text("Submit"),
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Close"),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                width: 200,
+                child: OutlinedButton(
+                  onPressed: _submitData,
+                  child: const Text("Submit"),
+                ),
+              ),
+            ],
+          ),
         )
       ]),
     );

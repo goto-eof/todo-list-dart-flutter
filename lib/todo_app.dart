@@ -86,15 +86,17 @@ class _ToDoAppState extends State<ToDoApp> {
     int id = await toDoService.insert(todo);
     todo.insertDateTime = DateTime.now();
     if (_toggleViewArchivedButton == false) {
-      _viewActive();
+      await _viewActive();
     }
-    setState(
-      () {
-        todo.id = id;
-        todos.insert(0, todo);
-      },
-    );
-    _updateDisableSortByPriority();
+    if (Navigator.of(context).mounted) {
+      setState(
+        () {
+          todo.id = id;
+          todos.insert(0, todo);
+        },
+      );
+      _updateDisableSortByPriority();
+    }
   }
 
   bool _checkIfAllItemsHasSamePriority() {
@@ -207,7 +209,7 @@ class _ToDoAppState extends State<ToDoApp> {
     _updateDisableSortByPriority();
   }
 
-  void _viewActive() async {
+  Future<void> _viewActive() async {
     setState(() {
       _isLoading = true;
     });
