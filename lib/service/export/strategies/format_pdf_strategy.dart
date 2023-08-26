@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
 import 'package:todolistapp/service/export/strategies/format_strategy.dart';
