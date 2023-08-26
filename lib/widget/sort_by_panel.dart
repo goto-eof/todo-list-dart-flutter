@@ -48,9 +48,8 @@ class _ItemMenuState extends State<SortByPanel> {
               color: _calculateSortByPriorityColor(),
               onPressed:
                   widget.disableSortByPriorityButton ? null : _reversePriority,
-              icon: Icon(reversePriority
-                  ? Icons.keyboard_double_arrow_down
-                  : Icons.keyboard_double_arrow_up),
+              icon: Icon(
+                  reversePriority ? Icons.switch_left : Icons.switch_right),
             ),
             Text(
               "Priority",
@@ -69,9 +68,7 @@ class _ItemMenuState extends State<SortByPanel> {
                   },
                 );
               },
-              icon: Icon(reverseDate
-                  ? Icons.keyboard_double_arrow_down
-                  : Icons.keyboard_double_arrow_up),
+              icon: Icon(reverseDate ? Icons.switch_left : Icons.switch_right),
             ),
             const Text("Date")
           ],
