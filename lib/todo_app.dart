@@ -227,11 +227,32 @@ class _ToDoAppState extends State<ToDoApp> {
     setState(() {
       todos.sort(
         (ToDo a, ToDo b) {
+          if (a.done) {
+            if (!b.done) {
+              return 1;
+            }
+            return 0;
+          }
           if (a.priority.index > b.priority.index) {
+            if (b.done) {
+              return 0;
+            }
             return 1 * (reverse ? -1 : 1);
           }
           if (a.priority.index < b.priority.index) {
+            if (b.done) {
+              return 0;
+            }
             return -1 * (reverse ? -1 : 1);
+          }
+          if (!a.done && !b.done && a.priority.index == b.priority.index) {
+            if (a.date.compareTo(b.date) > 0) {
+              return -1 * (reverse ? -1 : 1);
+            }
+            if (a.date.compareTo(b.date) < 0) {
+              return 1 * (reverse ? -1 : 1);
+            }
+            return 0;
           }
           return 0;
         },
@@ -243,10 +264,22 @@ class _ToDoAppState extends State<ToDoApp> {
     setState(() {
       todos.sort(
         (ToDo a, ToDo b) {
+          if (a.done) {
+            if (!b.done) {
+              return 1;
+            }
+            return 0;
+          }
           if (a.date.compareTo(b.date) > 0) {
+            if (b.done) {
+              return 0;
+            }
             return 1 * (reverse ? -1 : 1);
           }
           if (a.date.compareTo(b.date) < 0) {
+            if (b.done) {
+              return 0;
+            }
             return -1 * (reverse ? -1 : 1);
           }
           return 0;
