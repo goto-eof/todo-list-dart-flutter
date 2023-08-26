@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart' as FilePicker;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolistapp/model/todo.dart';
+import 'package:todolistapp/service/export/file_content_generator.dart';
 import 'package:todolistapp/service/todo_service.dart';
 import 'package:todolistapp/widget/application_header.dart';
 import 'package:todolistapp/widget/insert_todo_item_form.dart';
@@ -375,7 +380,32 @@ class _ToDoAppState extends State<ToDoApp> {
                 sortByDate: _sortByDate,
                 disableSortByPriorityButton: _disableSortByPriorityButton),
             const SizedBox(
-              width: 50,
+              width: 10,
+            ),
+            Row(
+              children: [
+                PopupMenuButton<FileType>(
+                  position: PopupMenuPosition.under,
+                  icon: const Icon(Icons.subdirectory_arrow_right),
+                  onSelected: _exportData,
+                  tooltip: "Export the TODO items from the current list",
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<FileType>>[
+                    const PopupMenuItem<FileType>(
+                      value: FileType.csv,
+                      child: Text('CSV'),
+                    ),
+                    const PopupMenuItem<FileType>(
+                      value: FileType.pdf,
+                      child: Text('PDF'),
+                    ),
+                  ],
+                ),
+                const Text("Export"),
+                const SizedBox(
+                  width: 20,
+                ),
+              ],
             )
           ],
         ),
@@ -398,6 +428,16 @@ class _ToDoAppState extends State<ToDoApp> {
         )
       ],
     );
+  }
+
+  void _exportData(FileType fileType) async {
+    String? filePathAndName = await FilePicker.FilePicker.platform.saveFile();
+    if (filePathAndName != null) {
+      FileContentGenerator fileGenerator = FileContentGenerator();
+      Uint8List data = await fileGenerator.convertToUint8List(todos, fileType);
+      final file = File("$filePathAndName.${fileType.name}");
+      await file.writeAsBytes(data);
+    }
   }
 
   @override

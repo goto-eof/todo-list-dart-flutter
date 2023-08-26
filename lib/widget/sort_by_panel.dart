@@ -45,6 +45,7 @@ class _ItemMenuState extends State<SortByPanel> {
         Row(
           children: [
             IconButton(
+              tooltip: "Sort by priority",
               color: _calculateSortByPriorityColor(),
               onPressed:
                   widget.disableSortByPriorityButton ? null : _reversePriority,
@@ -60,6 +61,7 @@ class _ItemMenuState extends State<SortByPanel> {
         Row(
           children: [
             IconButton(
+              tooltip: "Sort by date",
               onPressed: () {
                 widget.sortByDate(reverseDate);
                 setState(

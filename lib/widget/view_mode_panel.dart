@@ -10,29 +10,29 @@ class ViewModePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              changeViewMode(ViewMode.normal);
-            },
-            icon: Icon(
-              Icons.view_column,
-              color: viewMode == ViewMode.normal ? Colors.orange : null,
-            ),
+    return Row(
+      children: [
+        IconButton(
+          tooltip: "Classic view",
+          onPressed: () {
+            changeViewMode(ViewMode.normal);
+          },
+          icon: Icon(
+            Icons.view_stream,
+            color: viewMode == ViewMode.normal ? Colors.orange : null,
           ),
-          IconButton(
-            onPressed: () {
-              changeViewMode(ViewMode.compact);
-            },
-            icon: Icon(
-              Icons.view_compact,
-              color: viewMode == ViewMode.compact ? Colors.orange : null,
-            ),
+        ),
+        IconButton(
+          tooltip: "Compact view",
+          onPressed: () {
+            changeViewMode(ViewMode.compact);
+          },
+          icon: Icon(
+            Icons.view_headline,
+            color: viewMode == ViewMode.compact ? Colors.orange : null,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
