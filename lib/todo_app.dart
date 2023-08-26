@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart' as FilePicker;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todolistapp/model/secondary_menu_items.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
 import 'package:todolistapp/service/import/file_content_loader.dart';
@@ -352,7 +353,7 @@ class _ToDoAppState extends State<ToDoApp> {
           );
   }
 
-  void _showOperationInProgress() {
+  void _showOperationInProgressAlert() {
     showAdaptiveDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -417,9 +418,9 @@ class _ToDoAppState extends State<ToDoApp> {
                           child: const CircularProgressIndicator(),
                         )
                       : const Icon(Icons.subdirectory_arrow_left),
-                  onSelected: _importingData || _exportingData
+                  onSelected: _isOperationInProgress()
                       ? (ImportFileType importFileType) {
-                          _showOperationInProgress();
+                          _showOperationInProgressAlert();
                         }
                       : _importData,
                   tooltip: "Import the TODO items from the file",
@@ -454,9 +455,9 @@ class _ToDoAppState extends State<ToDoApp> {
                           child: const CircularProgressIndicator(),
                         )
                       : const Icon(Icons.subdirectory_arrow_right),
-                  onSelected: _exportingData || _importingData
+                  onSelected: _isOperationInProgress()
                       ? (FileType fileType) {
-                          _showOperationInProgress();
+                          _showOperationInProgressAlert();
                         }
                       : _exportData,
                   tooltip: "Export the TODO items from the current list",
@@ -485,6 +486,43 @@ class _ToDoAppState extends State<ToDoApp> {
                 ),
               ],
             ),
+            Row(
+              children: [
+                PopupMenuButton<SecondaryMenuItem>(
+                  position: PopupMenuPosition.under,
+                  icon: _exportingData
+                      ? Transform.scale(
+                          scale: 0.5,
+                          child: const CircularProgressIndicator(),
+                        )
+                      : const Icon(Icons.settings),
+                  onSelected: _isOperationInProgress()
+                      ? (SecondaryMenuItem menuItem) {
+                          _showOperationInProgressAlert();
+                        }
+                      : _secondaryMenuActionExecute,
+                  tooltip: "Other functions",
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<SecondaryMenuItem>>[
+                    const PopupMenuItem<SecondaryMenuItem>(
+                      value: SecondaryMenuItem.deleteAll,
+                      child: Text('Delete all'),
+                    ),
+                  ],
+                ),
+                Text(
+                  "Actions",
+                  style: TextStyle(
+                    color: _isOperationInProgress()
+                        ? const Color.fromARGB(255, 114, 114, 114)
+                        : null,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+              ],
+            ),
           ],
         ),
         Expanded(
@@ -495,7 +533,21 @@ class _ToDoAppState extends State<ToDoApp> {
                     child: CircularProgressIndicator(),
                   )
                 : todos.isEmpty
-                    ? const Text("No data found")
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text("No data found"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          OutlinedButton(
+                              onPressed: _openAddNewToDoForm,
+                              child: const Text("Add new TO DO"))
+                        ],
+                      )
                     : ListView.builder(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
@@ -506,6 +558,25 @@ class _ToDoAppState extends State<ToDoApp> {
         )
       ],
     );
+  }
+
+  void _secondaryMenuActionExecute(SecondaryMenuItem secondaryMenuItem) async {
+    if (secondaryMenuItem == SecondaryMenuItem.deleteAll) {
+      setState(() {
+        _isLoading = true;
+      });
+      for (ToDo todo in todos) {
+        await toDoService.delete(todo.id);
+      }
+      setState(() {
+        todos = [];
+        _isLoading = false;
+      });
+    }
+  }
+
+  bool _isOperationInProgress() {
+    return _exportingData || _importingData || _isLoading;
   }
 
   void _exportData(FileType fileType) async {

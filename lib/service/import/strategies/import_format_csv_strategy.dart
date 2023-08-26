@@ -5,7 +5,7 @@ import 'package:csv/csv.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/import/file_content_loader.dart';
 import 'package:todolistapp/service/import/strategies/import_format_strategy.dart';
-import 'package:todolistapp/service/todo_status.dart';
+import 'package:todolistapp/model/todo_status.dart';
 
 class ImportFormatCsvStrategy implements ImportFormatStrategy {
   @override
