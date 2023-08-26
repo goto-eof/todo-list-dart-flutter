@@ -34,7 +34,8 @@ class _ToDoAppState extends State<ToDoApp> {
   SharedPreferences? sharedPreferences;
   ViewMode _viewMode = ViewMode.normal;
   PackageInfo? packageInfo;
-
+  bool _importingData = false;
+  bool _exportingData = false;
   @override
   void initState() {
     _loadToDoList();
@@ -351,6 +352,25 @@ class _ToDoAppState extends State<ToDoApp> {
           );
   }
 
+  void _showOperationInProgress() {
+    showAdaptiveDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          actions: [
+            OutlinedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text("Close"))
+          ],
+          content:
+              const Text("An operation is already in progress. Please wait."),
+        );
+      },
+    );
+  }
+
   Widget _generateApplicationContent() {
     return Column(
       children: [
@@ -391,8 +411,17 @@ class _ToDoAppState extends State<ToDoApp> {
               children: [
                 PopupMenuButton<ImportFileType>(
                   position: PopupMenuPosition.under,
-                  icon: const Icon(Icons.subdirectory_arrow_left),
-                  onSelected: _importData,
+                  icon: _importingData
+                      ? Transform.scale(
+                          scale: 0.5,
+                          child: const CircularProgressIndicator(),
+                        )
+                      : const Icon(Icons.subdirectory_arrow_left),
+                  onSelected: _importingData || _exportingData
+                      ? (ImportFileType importFileType) {
+                          _showOperationInProgress();
+                        }
+                      : _importData,
                   tooltip: "Import the TODO items from the file",
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<ImportFileType>>[
@@ -402,7 +431,14 @@ class _ToDoAppState extends State<ToDoApp> {
                     ),
                   ],
                 ),
-                const Text("Import"),
+                Text(
+                  "Import",
+                  style: TextStyle(
+                    color: _importingData || _exportingData
+                        ? const Color.fromARGB(255, 114, 114, 114)
+                        : null,
+                  ),
+                ),
                 const SizedBox(
                   width: 20,
                 ),
@@ -412,8 +448,17 @@ class _ToDoAppState extends State<ToDoApp> {
               children: [
                 PopupMenuButton<FileType>(
                   position: PopupMenuPosition.under,
-                  icon: const Icon(Icons.subdirectory_arrow_right),
-                  onSelected: _exportData,
+                  icon: _exportingData
+                      ? Transform.scale(
+                          scale: 0.5,
+                          child: const CircularProgressIndicator(),
+                        )
+                      : const Icon(Icons.subdirectory_arrow_right),
+                  onSelected: _exportingData || _importingData
+                      ? (FileType fileType) {
+                          _showOperationInProgress();
+                        }
+                      : _exportData,
                   tooltip: "Export the TODO items from the current list",
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<FileType>>[
@@ -427,7 +472,14 @@ class _ToDoAppState extends State<ToDoApp> {
                     ),
                   ],
                 ),
-                const Text("Export"),
+                Text(
+                  "Export",
+                  style: TextStyle(
+                    color: _importingData || _exportingData
+                        ? const Color.fromARGB(255, 114, 114, 114)
+                        : null,
+                  ),
+                ),
                 const SizedBox(
                   width: 20,
                 ),
@@ -459,17 +511,29 @@ class _ToDoAppState extends State<ToDoApp> {
   void _exportData(FileType fileType) async {
     String? filePathAndName = await FilePicker.FilePicker.platform.saveFile();
     if (filePathAndName != null) {
+      setState(() {
+        _exportingData = true;
+      });
       FileContentGenerator fileGenerator = FileContentGenerator();
       Uint8List data = await fileGenerator.convertToUint8List(todos, fileType);
       final file = File("$filePathAndName.${fileType.name}");
       await file.writeAsBytes(data);
+      setState(() {
+        _exportingData = false;
+      });
     }
   }
 
   void _importData(ImportFileType fileType) async {
     FilePicker.FilePickerResult? filePickerResult =
-        await FilePicker.FilePicker.platform.pickFiles(allowMultiple: false);
+        await FilePicker.FilePicker.platform.pickFiles(
+            allowMultiple: false,
+            type: FilePicker.FileType.custom,
+            allowedExtensions: ["csv"]);
     if (filePickerResult != null) {
+      setState(() {
+        _importingData = true;
+      });
       FileContentLoader fileContentLoader = FileContentLoader();
       List<ToDo> importedToDos = await fileContentLoader.convertToToDoList(
           filePickerResult.files[0].path!, fileType);
@@ -484,6 +548,7 @@ class _ToDoAppState extends State<ToDoApp> {
       }
       setState(() {
         todos.addAll(importedToDos);
+        _importingData = false;
       });
     }
   }
