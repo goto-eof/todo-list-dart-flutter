@@ -9,7 +9,7 @@ import 'package:todolistapp/model/secondary_menu_items.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
 import 'package:todolistapp/service/import/file_content_loader.dart';
-import 'package:todolistapp/service/todo_service.dart';
+import 'package:todolistapp/service/todo_db_service.dart';
 import 'package:todolistapp/widget/application_header.dart';
 import 'package:todolistapp/widget/insert_todo_item_form.dart';
 import 'package:todolistapp/widget/sort_by_panel.dart';
@@ -28,7 +28,7 @@ class ToDoApp extends StatefulWidget {
 
 class _ToDoAppState extends State<ToDoApp> {
   List<ToDo> todos = [];
-  final ToDoService toDoService = ToDoService();
+  final ToDoDbService toDoService = ToDoDbService();
   var _isLoading = true;
   var _toggleViewArchivedButton = true;
   bool _disableSortByPriorityButton = false;
