@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:todolistapp/model/todo.dart';
 
@@ -89,6 +90,14 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
 
   @override
   Widget build(BuildContext context) {
+    var toDoFocusNode = FocusNode(onKey: (node, event) {
+      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+        _submitData();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    });
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -107,6 +116,7 @@ class _InsertTodoItemFormState extends State<InsertTodoItemForm> {
             Expanded(
               child: TextField(
                 autofocus: true,
+                focusNode: toDoFocusNode,
                 controller: _textController,
                 keyboardType: TextInputType.text,
                 maxLength: 100,

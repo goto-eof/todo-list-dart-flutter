@@ -4,7 +4,7 @@ import 'package:todolistapp/widget/Item_menu.dart';
 import 'package:todolistapp/widget/view_mode_panel.dart';
 
 class ToDoItem extends StatelessWidget {
-  ToDoItem(
+  const ToDoItem(
       {super.key,
       required this.todo,
       required this.deleteItem,

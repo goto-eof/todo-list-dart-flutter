@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/todo_service.dart';
+import 'package:todolistapp/widget/application_header.dart';
 import 'package:todolistapp/widget/insert_todo_item_form.dart';
 import 'package:todolistapp/widget/sort_by_panel.dart';
 import 'package:todolistapp/widget/todo_item.dart';
 import 'package:todolistapp/widget/view_mode_panel.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-final Uri projectUri =
-    Uri.parse("https://github.com/goto-eof/todo-list-dart-flutter");
+import 'package:todolistapp/widget/about_dialog.dart' as ToDoListAboutDialog;
 
 class ToDoApp extends StatefulWidget {
   const ToDoApp({super.key});
@@ -28,22 +27,23 @@ class _ToDoAppState extends State<ToDoApp> {
   bool _disableSortByPriorityButton = false;
   SharedPreferences? sharedPreferences;
   ViewMode _viewMode = ViewMode.normal;
-
+  PackageInfo? packageInfo;
   @override
   void initState() {
-    loadToDoList();
-    super.initState();
-    getSharedPreferences();
+    _loadToDoList();
+    _getSharedPreferences();
     _loadPreferences();
+    super.initState();
   }
 
-  Future<SharedPreferences> getSharedPreferences() async {
+  Future<SharedPreferences> _getSharedPreferences() async {
     sharedPreferences ??= await SharedPreferences.getInstance();
+    packageInfo ??= await PackageInfo.fromPlatform();
     return sharedPreferences!;
   }
 
   void _loadPreferences() async {
-    SharedPreferences sharedPreferences = await getSharedPreferences();
+    SharedPreferences sharedPreferences = await _getSharedPreferences();
     String? viewMode = sharedPreferences.getString('viewMode');
     if (viewMode != null) {
       ViewMode convertedViewMode =
@@ -54,7 +54,7 @@ class _ToDoAppState extends State<ToDoApp> {
     }
   }
 
-  void loadToDoList() async {
+  void _loadToDoList() async {
     try {
       List<ToDo> list = await toDoService.list();
 
@@ -76,13 +76,7 @@ class _ToDoAppState extends State<ToDoApp> {
     }
   }
 
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(projectUri)) {
-      throw Exception('Could not launch $projectUri');
-    }
-  }
-
-  Widget retrieveInsertToDoItemForm(BuildContext context) {
+  Widget _retrieveInsertToDoItemForm(BuildContext context) {
     return InsertTodoItemForm(
       onAddTodo: _addTodoItemToTheList,
     );
@@ -103,14 +97,14 @@ class _ToDoAppState extends State<ToDoApp> {
     _updateDisableSortByPriority();
   }
 
-  bool checkIfAllItemsHasSamePriority() {
+  bool _checkIfAllItemsHasSamePriority() {
     Priority priority = todos[0].priority;
     ToDo? toDoWithOtherPriority =
         todos.where((ToDo todo) => todo.priority != priority).firstOrNull;
     return toDoWithOtherPriority == null;
   }
 
-  ToDoItem itemBuilder(BuildContext context, int index) {
+  ToDoItem _toDoItemBuilder(BuildContext context, int index) {
     return ToDoItem(
         todo: todos[index],
         deleteItem: _deleteTodo,
@@ -120,7 +114,7 @@ class _ToDoAppState extends State<ToDoApp> {
         viewMode: _viewMode);
   }
 
-  void _undo(index, ToDo todo) async {
+  void _undoToDoDeletion(index, ToDo todo) async {
     int id = await toDoService.insert(todo);
     setState(
       () {
@@ -131,7 +125,14 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   Widget _aboutDialogBuilder(BuildContext context) {
-    return const AboutDialog();
+    return ToDoListAboutDialog.AboutDialog(
+      applicationName: "To Do List",
+      applicationSnapName: "todolistapp",
+      applicationIcon: Image.asset("assets/images/icon-48.png"),
+      applicationVersion: packageInfo!.version,
+      applicationLegalese: "MIT",
+      applicationDeveloper: "Andrei Dodu",
+    );
   }
 
   void _toggleDoneValue(ToDo todo) async {
@@ -177,7 +178,7 @@ class _ToDoAppState extends State<ToDoApp> {
         action: SnackBarAction(
             label: "Undo",
             onPressed: () {
-              _undo(index, todo);
+              _undoToDoDeletion(index, todo);
             }),
         duration: const Duration(seconds: 5),
         content: const Text("Do you want to undo the change?"),
@@ -188,7 +189,7 @@ class _ToDoAppState extends State<ToDoApp> {
 
   void _updateDisableSortByPriority() {
     setState(() {
-      _disableSortByPriorityButton = checkIfAllItemsHasSamePriority();
+      _disableSortByPriorityButton = _checkIfAllItemsHasSamePriority();
     });
   }
 
@@ -253,16 +254,34 @@ class _ToDoAppState extends State<ToDoApp> {
   }
 
   void _changeViewMode(ViewMode newViewMode) async {
-    SharedPreferences sharedPreferences = await getSharedPreferences();
+    SharedPreferences sharedPreferences = await _getSharedPreferences();
     sharedPreferences.setString("viewMode", newViewMode.name);
     setState(() {
       _viewMode = newViewMode;
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var calculatedViewArchiveButton = _toggleViewArchivedButton
+  List<Widget> _generateApplicationButtons() {
+    return [
+      IconButton(
+          onPressed: () {
+            showDialog(context: context, builder: _aboutDialogBuilder);
+          },
+          icon: const Icon(Icons.info)),
+      IconButton(
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: false,
+                constraints: const BoxConstraints(minWidth: double.infinity),
+                context: context,
+                builder: _retrieveInsertToDoItemForm);
+          },
+          icon: const Icon(Icons.add)),
+    ];
+  }
+
+  Widget _calculatedViewArchiveButton() {
+    return _toggleViewArchivedButton
         ? OutlinedButton(
             style: const ButtonStyle(
               shadowColor:
@@ -280,96 +299,76 @@ class _ToDoAppState extends State<ToDoApp> {
             onPressed: _viewActive,
             child: const Text("View active tasks"),
           );
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
+  Widget _generateApplicationContent() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Image.asset(
-              "assets/images/icon-48.png",
+            Container(
+              padding: const EdgeInsets.only(left: 40),
+              child: Row(
+                children: [
+                  Text(_toggleViewArchivedButton
+                      ? "Active tasks (${todos.length})"
+                      : "Archived tasks (${todos.length})"),
+                ],
+              ),
             ),
+            const Spacer(),
+            _calculatedViewArchiveButton(),
             const SizedBox(
-              width: 5,
+              width: 10,
             ),
-            const Text("To Do List"),
+            ViewModePanel(changeViewMode: _changeViewMode, viewMode: _viewMode),
+            const SizedBox(
+              width: 10,
+            ),
+            SortByPanel(
+                sortByPriority: _sortByPriority,
+                sortByDate: _sortByDate,
+                disableSortByPriorityButton: _disableSortByPriorityButton),
+            const SizedBox(
+              width: 50,
+            )
           ],
         ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : todos.isEmpty
+                    ? const Text("No data found")
+                    : ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: _toDoItemBuilder,
+                        itemCount: todos.length,
+                      ),
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const ApplicationHeader(),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          IconButton(
-              onPressed: () {
-                showDialog(context: context, builder: _aboutDialogBuilder);
-              },
-              icon: const Icon(Icons.info)),
-          IconButton(
-              onPressed: () {
-                showModalBottomSheet(
-                    isScrollControlled: false,
-                    constraints:
-                        const BoxConstraints(minWidth: double.infinity),
-                    context: context,
-                    builder: retrieveInsertToDoItemForm);
-              },
-              icon: const Icon(Icons.add)),
-        ],
+        actions: _generateApplicationButtons(),
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(left: 40),
-                child: Row(
-                  children: [
-                    Text(_toggleViewArchivedButton
-                        ? "Active tasks (${todos.length})"
-                        : "Archived tasks (${todos.length})"),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              calculatedViewArchiveButton,
-              const SizedBox(
-                width: 10,
-              ),
-              ViewModePanel(
-                  changeViewMode: _changeViewMode, viewMode: _viewMode),
-              const SizedBox(
-                width: 10,
-              ),
-              SortByPanel(
-                  sortByPriority: _sortByPriority,
-                  sortByDate: _sortByDate,
-                  disableSortByPriorityButton: _disableSortByPriorityButton),
-              const SizedBox(
-                width: 50,
-              )
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : todos.isEmpty
-                      ? const Text("No data found")
-                      : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemBuilder: itemBuilder,
-                          itemCount: todos.length,
-                        ),
-            ),
-          )
-        ],
-      ),
+      body: _generateApplicationContent(),
     );
   }
 }
