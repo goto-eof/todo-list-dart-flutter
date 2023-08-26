@@ -270,16 +270,16 @@ class _ToDoAppState extends State<ToDoApp> {
             showDialog(context: context, builder: _aboutDialogBuilder);
           },
           icon: const Icon(Icons.info)),
-      IconButton(
-          onPressed: () {
-            showModalBottomSheet(
-                isScrollControlled: false,
-                constraints: const BoxConstraints(minWidth: double.infinity),
-                context: context,
-                builder: _retrieveInsertToDoItemForm);
-          },
-          icon: const Icon(Icons.add)),
+      IconButton(onPressed: _openAddNewToDoForm, icon: const Icon(Icons.add)),
     ];
+  }
+
+  void _openAddNewToDoForm() {
+    showModalBottomSheet(
+        isScrollControlled: false,
+        constraints: const BoxConstraints(minWidth: double.infinity),
+        context: context,
+        builder: _retrieveInsertToDoItemForm);
   }
 
   Widget _calculatedViewArchiveButton() {
