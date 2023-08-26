@@ -2,11 +2,12 @@ import 'dart:typed_data';
 
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
-import 'package:todolistapp/service/export/strategies/format_strategy.dart';
+import 'package:todolistapp/service/export/strategies/export_format_strategy.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:todolistapp/service/todo_status.dart';
 
-class FormatPdfStrategy implements FormatStrategy {
+class ExportFormatPdfStrategy implements ExportFormatStrategy {
   @override
   Future<Uint8List> generateContent(List<ToDo> todos) async {
     final pdf = pw.Document();
@@ -50,7 +51,10 @@ class FormatPdfStrategy implements FormatStrategy {
                       pw.Column(
                         mainAxisSize: pw.MainAxisSize.max,
                         children: [
-                          pw.Text(todo.done ? "YES" : "NO",
+                          pw.Text(
+                              todo.done
+                                  ? ToDoStatus.done.name
+                                  : ToDoStatus.todo.name,
                               style: const pw.TextStyle(fontSize: fontSize))
                         ],
                       ),

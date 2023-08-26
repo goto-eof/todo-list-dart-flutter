@@ -1,16 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:todolistapp/model/todo.dart';
-import 'package:todolistapp/service/export/strategies/format_csv_strategy.dart';
-import 'package:todolistapp/service/export/strategies/format_pdf_strategy.dart';
-import 'package:todolistapp/service/export/strategies/format_strategy.dart';
+import 'package:todolistapp/service/export/strategies/export_format_csv_strategy.dart';
+import 'package:todolistapp/service/export/strategies/export_format_pdf_strategy.dart';
+import 'package:todolistapp/service/export/strategies/export_format_strategy.dart';
 
 enum FileType { pdf, csv }
 
 class FileContentGenerator {
-  static List<FormatStrategy> strategies = [
-    FormatCsvStrategy(),
-    FormatPdfStrategy()
+  static List<ExportFormatStrategy> strategies = [
+    ExportFormatCsvStrategy(),
+    ExportFormatPdfStrategy()
   ];
 
   FileContentGenerator._();

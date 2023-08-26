@@ -4,9 +4,10 @@ import 'dart:typed_data';
 import 'package:csv/csv.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
-import 'package:todolistapp/service/export/strategies/format_strategy.dart';
+import 'package:todolistapp/service/export/strategies/export_format_strategy.dart';
+import 'package:todolistapp/service/todo_status.dart';
 
-class FormatCsvStrategy implements FormatStrategy {
+class ExportFormatCsvStrategy implements ExportFormatStrategy {
   @override
   Future<Uint8List> generateContent(List<ToDo> todos) async {
     final List<String> rowHeader = [
@@ -21,7 +22,7 @@ class FormatCsvStrategy implements FormatStrategy {
     rows.add(rowHeader);
     for (ToDo todo in todos) {
       List<dynamic> dataRow = [];
-      dataRow.add(todo.done ? 'YES' : "NO");
+      dataRow.add(todo.done ? ToDoStatus.done.name : ToDoStatus.todo.name);
       dataRow.add(todo.priority.name);
       dataRow.add(todo.text);
       dataRow.add(todo.category.name);

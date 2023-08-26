@@ -7,6 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolistapp/model/todo.dart';
 import 'package:todolistapp/service/export/file_content_generator.dart';
+import 'package:todolistapp/service/import/file_content_loader.dart';
 import 'package:todolistapp/service/todo_service.dart';
 import 'package:todolistapp/widget/application_header.dart';
 import 'package:todolistapp/widget/insert_todo_item_form.dart';
@@ -309,11 +310,15 @@ class _ToDoAppState extends State<ToDoApp> {
   List<Widget> _generateApplicationButtons() {
     return [
       IconButton(
+          tooltip: "About",
           onPressed: () {
             showDialog(context: context, builder: _aboutDialogBuilder);
           },
           icon: const Icon(Icons.info)),
-      IconButton(onPressed: _openAddNewToDoForm, icon: const Icon(Icons.add)),
+      IconButton(
+          tooltip: "Add new TO DO",
+          onPressed: _openAddNewToDoForm,
+          icon: const Icon(Icons.add)),
     ];
   }
 
@@ -384,6 +389,27 @@ class _ToDoAppState extends State<ToDoApp> {
             ),
             Row(
               children: [
+                PopupMenuButton<ImportFileType>(
+                  position: PopupMenuPosition.under,
+                  icon: const Icon(Icons.subdirectory_arrow_left),
+                  onSelected: _importData,
+                  tooltip: "Import the TODO items from the file",
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<ImportFileType>>[
+                    const PopupMenuItem<ImportFileType>(
+                      value: ImportFileType.csv,
+                      child: Text('CSV'),
+                    ),
+                  ],
+                ),
+                const Text("Import"),
+                const SizedBox(
+                  width: 20,
+                ),
+              ],
+            ),
+            Row(
+              children: [
                 PopupMenuButton<FileType>(
                   position: PopupMenuPosition.under,
                   icon: const Icon(Icons.subdirectory_arrow_right),
@@ -406,7 +432,7 @@ class _ToDoAppState extends State<ToDoApp> {
                   width: 20,
                 ),
               ],
-            )
+            ),
           ],
         ),
         Expanded(
@@ -437,6 +463,28 @@ class _ToDoAppState extends State<ToDoApp> {
       Uint8List data = await fileGenerator.convertToUint8List(todos, fileType);
       final file = File("$filePathAndName.${fileType.name}");
       await file.writeAsBytes(data);
+    }
+  }
+
+  void _importData(ImportFileType fileType) async {
+    FilePicker.FilePickerResult? filePickerResult =
+        await FilePicker.FilePicker.platform.pickFiles(allowMultiple: false);
+    if (filePickerResult != null) {
+      FileContentLoader fileContentLoader = FileContentLoader();
+      List<ToDo> importedToDos = await fileContentLoader.convertToToDoList(
+          filePickerResult.files[0].path!, fileType);
+
+      if (_toggleViewArchivedButton == false) {
+        await _viewActive();
+      }
+      for (ToDo todo in importedToDos) {
+        int id = await toDoService.insert(todo);
+        todo.insertDateTime = DateTime.now();
+        todo.id = id;
+      }
+      setState(() {
+        todos.addAll(importedToDos);
+      });
     }
   }
 
