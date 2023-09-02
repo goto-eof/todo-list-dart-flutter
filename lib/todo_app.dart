@@ -145,7 +145,7 @@ class _ToDoAppState extends State<ToDoApp> {
       applicationSnapName: "todolistapp",
       applicationIcon: Image.asset("assets/images/icon-48.png"),
       applicationVersion: packageInfo!.version,
-      applicationLegalese: "MIT",
+      applicationLegalese: "GPL-3.0 license",
       applicationDeveloper: "Andrei Dodu",
     );
   }
